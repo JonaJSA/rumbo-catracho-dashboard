@@ -1,0 +1,1033 @@
+﻿<!DOCTYPE html>
+<html lang="es" data-theme="light">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Rumbo Catracho - Backoffice y Dashboard Administrativo de Monitoreo Operativo. Proyecto académico para Portales Web II (UNICAH).">
+  <meta name="author" content="Jonathan Ávila">
+  <title>Rumbo Catracho | Panel de Monitoreo y Operaciones (Backoffice)</title>
+
+  <!-- Favicon corporativo -->
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+
+  <!-- Bulma CSS 1.0.4 (Versión de clase del Ing. Betancourth) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
+
+  <!-- Font Awesome 6.5.1 para iconografía técnica empresarial -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Estilos personalizados del Dashboard -->
+  <link rel="stylesheet" href="styles.css">
+
+  <!-- Chart.js para visualización de analítica operativa -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+
+<body>
+
+  <!-- ====================================================================
+       1. TOP NAVBAR (BARRA DE CONTROL SUPERIOR)
+       Componente Bulma: .navbar, .navbar-brand, .navbar-menu, .navbar-item
+       ==================================================================== -->
+  <nav class="navbar dashboard-navbar" role="navigation" aria-label="Navegación principal de operaciones">
+    <div class="navbar-brand">
+      <a class="navbar-item is-flex is-align-items-center gap-2" href="#inicio">
+        <img src="assets/img/favicon.svg" alt="Logotipo Rumbo Catracho" width="32" height="32" class="mr-2">
+        <div>
+          <span class="has-text-weight-bold has-text-dark is-size-6">Rumbo Catracho</span>
+          <span class="brand-badge ml-2">Backoffice ERP</span>
+        </div>
+      </a>
+
+      <!-- Burger para vista móvil (Patrón de bulmademo.html) -->
+      <a role="button" class="navbar-burger js-burger" aria-label="menu" aria-expanded="false" data-target="navbarOperaciones">
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </a>
+    </div>
+
+    <div id="navbarOperaciones" class="navbar-menu">
+      <div class="navbar-start is-align-items-center ml-4">
+        <!-- Indicador de telemetría / servidor en vivo -->
+        <div class="navbar-item">
+          <span class="system-status-indicator">
+            <span class="pulse-dot"></span>
+            Sistema en Línea &bull; Nodo SPS-01
+          </span>
+        </div>
+
+        <!-- Buscador global rápido -->
+        <div class="navbar-item is-hidden-touch">
+          <div class="field mb-0">
+            <p class="control has-icons-left">
+              <input class="input is-small is-rounded" type="search" placeholder="Buscar #RC-reserva, pasajero, DNI..." id="inputBusquedaGlobal" style="width: 280px;">
+              <span class="icon is-small is-left">
+                <i class="fas fa-search"></i>
+              </span>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="navbar-end is-align-items-center pr-3">
+        <!-- Botón para ver la justificación académica de la tarea -->
+        <div class="navbar-item">
+          <button class="button is-small is-warning is-light has-text-weight-bold" id="btnModalTeoria">
+            <span class="icon is-small"><i class="fas fa-graduation-cap"></i></span>
+            <span>Comercial vs. Empresarial</span>
+          </button>
+        </div>
+
+        <!-- Notificaciones de contingencia -->
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link is-arrowless">
+            <span class="icon has-text-grey-dark">
+              <i class="fas fa-bell"></i>
+            </span>
+            <span class="tag is-danger is-rounded is-small">3</span>
+          </a>
+          <div class="navbar-dropdown is-right is-boxed">
+            <p class="navbar-item has-text-weight-bold is-size-7 has-text-grey">ALERTAS OPERATIVAS RECIENTES</p>
+            <hr class="navbar-divider">
+            <a class="navbar-item is-size-7">
+              <span class="has-text-weight-semibold">La Ceiba &rarr; Roatán:</span> Oleaje bajo control (Marítimo OK)
+            </a>
+            <a class="navbar-item is-size-7">
+              <span class="has-text-weight-semibold">ACH Banco Atlántida:</span> 4 transacciones conciliadas
+            </a>
+            <a class="navbar-item is-size-7">
+              <span class="has-text-weight-semibold">Unidad Bus #02:</span> Cambio preventivo de neumáticos
+            </a>
+          </div>
+        </div>
+
+        <!-- Perfil del operador interno -->
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link">
+            <span class="icon-text is-align-items-center">
+              <span class="icon is-small mr-2"><i class="fas fa-user-shield has-text-primary"></i></span>
+              <span class="is-size-7"><strong>Jonathan Ávila</strong> (Supervisor Op.)</span>
+            </span>
+          </a>
+          <div class="navbar-dropdown is-right is-boxed">
+            <a class="navbar-item is-size-7" href="#registro">
+              <span class="icon is-small mr-1"><i class="fas fa-clipboard-list"></i></span> Bitácora SAR
+            </a>
+            <a class="navbar-item is-size-7" href="#seguridad">
+              <span class="icon is-small mr-1"><i class="fas fa-key"></i></span> Token de Firma Digital
+            </a>
+            <hr class="navbar-divider">
+            <a class="navbar-item is-size-7 has-text-danger" href="https://jonajsa.github.io/rumbo-catracho-bootstrap/" target="_blank">
+              <span class="icon is-small mr-1"><i class="fas fa-arrow-up-right-from-square"></i></span> Ir a Sitio Comercial (Público)
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+  <!-- ====================================================================
+       2. CONTENEDOR PRINCIPAL: SISTEMA DE CUADRÍCULA BULMA (.columns)
+       Sidebar (Menu vertical) + Dashboard Main (Datos y Tablas)
+       ==================================================================== -->
+  <div class="columns is-gapless mb-0 flex-grow-1">
+
+    <!-- BARRA LATERAL (SIDEBAR DE NAVEGACIÓN INTERNA)
+         Componente Bulma: aside.menu, .menu-label, .menu-list -->
+    <aside class="column is-2-widescreen is-3-desktop is-12-tablet dashboard-sidebar">
+      <div class="menu">
+        <p class="menu-label"><i class="fas fa-chart-line mr-1"></i> MONITOREO PRINCIPAL</p>
+        <ul class="menu-list">
+          <li>
+            <a class="is-active" href="#resumen">
+              <span><span class="icon is-small mr-2"><i class="fas fa-tachometer-alt"></i></span>Panel General</span>
+              <span class="tag is-white is-rounded is-small">Hoy</span>
+            </a>
+          </li>
+          <li>
+            <a href="#flota">
+              <span><span class="icon is-small mr-2"><i class="fas fa-route"></i></span>Despachos &amp; Flota</span>
+              <span class="tag is-info is-light is-rounded is-small">4 En ruta</span>
+            </a>
+          </li>
+          <li>
+            <a href="#transacciones">
+              <span><span class="icon is-small mr-2"><i class="fas fa-receipt"></i></span>Transacciones ACH/POS</span>
+              <span class="tag is-success is-light is-rounded is-small">148</span>
+            </a>
+          </li>
+        </ul>
+
+        <p class="menu-label"><i class="fas fa-boxes-packing mr-1"></i> LOGÍSTICA &amp; DESTINOS</p>
+        <ul class="menu-list">
+          <li><a href="#roatan"><span class="icon is-small mr-2"><i class="fas fa-umbrella-beach"></i></span>Roatán (Galaxy Wave)</a></li>
+          <li><a href="#copan"><span class="icon is-small mr-2"><i class="fas fa-landmark"></i></span>Copán Ruinas (Maya Express)</a></li>
+          <li><a href="#tigra"><span class="icon is-small mr-2"><i class="fas fa-tree"></i></span>La Tigra &amp; Senderos</a></li>
+        </ul>
+
+        <p class="menu-label"><i class="fas fa-file-invoice-dollar mr-1"></i> AUDITORÍA &amp; FISCALIDAD</p>
+        <ul class="menu-list">
+          <li><a href="#sar"><span class="icon is-small mr-2"><i class="fas fa-scale-balanced"></i></span>Cumplimiento SAR / ISV 15%</a></li>
+          <li><a href="#auditoria"><span class="icon is-small mr-2"><i class="fas fa-shield-halved"></i></span>Logs de Seguridad</a></li>
+        </ul>
+
+        <!-- Tarjeta de telemetría en el sidebar -->
+        <div class="box mt-5 p-3 has-background-white-ter is-shadowless" style="border: 1px solid var(--brand-border);">
+          <div class="level is-mobile mb-1">
+            <div class="level-left">
+              <span class="is-size-7 has-text-weight-bold has-text-grey">CAPACIDAD GLOBAL</span>
+            </div>
+            <div class="level-right">
+              <span class="is-size-7 has-text-weight-bold has-text-primary">89.4%</span>
+            </div>
+          </div>
+          <!-- Barra de progreso de Bulma: .progress -->
+          <progress class="progress is-primary is-small mb-2" value="89.4" max="100">89.4%</progress>
+          <p class="is-size-7 has-text-grey-dark">412 / 460 plazas ocupadas hoy en salidas programadas.</p>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ÁREA DE CONTENIDO PRINCIPAL DEL DASHBOARD -->
+    <main class="column is-10-widescreen is-9-desktop is-12-tablet dashboard-main" id="contenido-dashboard">
+
+      <!-- ENCABEZADO DE SECCIÓN + ACCIONES OPERATIVAS RÁPIDAS
+           Componentes Bulma: .level, .breadcrumb, .buttons, .button -->
+      <section class="level mb-4">
+        <div class="level-left">
+          <div>
+            <nav class="breadcrumb is-small mb-1" aria-label="breadcrumbs">
+              <ul>
+                <li><a href="#">Rumbo Catracho ERP</a></li>
+                <li><a href="#">Operaciones Nacionales</a></li>
+                <li class="is-active"><a href="#" aria-current="page">Panel de Control en Vivo</a></li>
+              </ul>
+            </nav>
+            <h1 class="title is-4 mb-1 has-text-dark">
+              <i class="fas fa-network-wired has-text-primary mr-2"></i>Monitoreo Transaccional &amp; Logístico
+            </h1>
+            <p class="subtitle is-6 has-text-grey">
+              Consola interna para supervisión y despacho de unidades turísticas de Honduras.
+            </p>
+          </div>
+        </div>
+
+        <div class="level-right">
+          <div class="buttons">
+            <button class="button is-small is-light" id="btnExportarAuditoria" title="Exportar reporte formal">
+              <span class="icon is-small"><i class="fas fa-file-csv"></i></span>
+              <span>Exportar Reporte</span>
+            </button>
+            <button class="button is-small is-primary has-text-weight-bold" id="btnNuevaReservaManual">
+              <span class="icon is-small"><i class="fas fa-plus"></i></span>
+              <span>+ Reserva Manual Call Center</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           3. INDICADORES DE RENDIMIENTO CLAVE (KPIS EMPRESARIALES)
+           Sistema de 4 columnas Bulma: .columns > .column.is-3-desktop
+           ==================================================================== -->
+      <section class="columns is-multiline mb-4" id="kpis-operativos">
+
+        <!-- KPI 1: Ingresos Transaccionales Brutos -->
+        <div class="column is-12-mobile is-6-tablet is-3-desktop">
+          <div class="kpi-card">
+            <div class="level is-mobile mb-2">
+              <div class="level-left">
+                <span class="kpi-label">Ingresos del Día</span>
+              </div>
+              <div class="level-right">
+                <div class="kpi-icon-wrapper kpi-icon-success">
+                  <i class="fas fa-sack-dollar"></i>
+                </div>
+              </div>
+            </div>
+            <div class="kpi-value">L. 384,950</div>
+            <div class="level is-mobile mt-2 mb-0">
+              <div class="level-left">
+                <span class="tag is-success is-light is-rounded has-text-weight-bold">
+                  <i class="fas fa-arrow-trend-up mr-1"></i> +14.8%
+                </span>
+              </div>
+              <div class="level-right">
+                <span class="is-size-7 has-text-grey">vs. domingo ant.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- KPI 2: Ocupación de Flota y Capacidad -->
+        <div class="column is-12-mobile is-6-tablet is-3-desktop">
+          <div class="kpi-card">
+            <div class="level is-mobile mb-2">
+              <div class="level-left">
+                <span class="kpi-label">Ocupación de Tours</span>
+              </div>
+              <div class="level-right">
+                <div class="kpi-icon-wrapper kpi-icon-primary">
+                  <i class="fas fa-bus-simple"></i>
+                </div>
+              </div>
+            </div>
+            <div class="kpi-value">89.4%</div>
+            <div class="level is-mobile mt-2 mb-0">
+              <div class="level-left">
+                <span class="tag is-info is-light is-rounded has-text-weight-bold">
+                  412 / 460 Asientos
+                </span>
+              </div>
+              <div class="level-right">
+                <span class="is-size-7 has-text-grey">18 unidades</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- KPI 3: Transacciones y Reservas Validadas -->
+        <div class="column is-12-mobile is-6-tablet is-3-desktop">
+          <div class="kpi-card">
+            <div class="level is-mobile mb-2">
+              <div class="level-left">
+                <span class="kpi-label">Transacciones Hoy</span>
+              </div>
+              <div class="level-right">
+                <div class="kpi-icon-wrapper kpi-icon-warning">
+                  <i class="fas fa-receipt"></i>
+                </div>
+              </div>
+            </div>
+            <div class="kpi-value">148 ops</div>
+            <div class="level is-mobile mt-2 mb-0">
+              <div class="level-left">
+                <span class="tag is-warning is-light is-rounded has-text-weight-bold">
+                  3 por auditar
+                </span>
+              </div>
+              <div class="level-right">
+                <span class="is-size-7 has-text-grey">142 aprobadas</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- KPI 4: Tasa de Cumplimiento Logístico -->
+        <div class="column is-12-mobile is-6-tablet is-3-desktop">
+          <div class="kpi-card">
+            <div class="level is-mobile mb-2">
+              <div class="level-left">
+                <span class="kpi-label">Puntualidad en Rutas</span>
+              </div>
+              <div class="level-right">
+                <div class="kpi-icon-wrapper kpi-icon-info">
+                  <i class="fas fa-shield-halved"></i>
+                </div>
+              </div>
+            </div>
+            <div class="kpi-value">98.6%</div>
+            <div class="level is-mobile mt-2 mb-0">
+              <div class="level-left">
+                <span class="tag is-success is-light is-rounded has-text-weight-bold">
+                  0 Incidentes
+                </span>
+              </div>
+              <div class="level-right">
+                <span class="is-size-7 has-text-grey">Protocolo SAR</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </section>
+      <!-- ====================================================================
+           4. SECCIÓN DE ANÁLISIS GRÁFICO (HERRAMIENTAS DE ANÁLISIS)
+           Bulma Columns: is-8 (Tendencias) y is-4 (Participación de Destinos)
+           ==================================================================== -->
+      <section class="columns is-multiline mb-4">
+
+        <!-- Gráfico 1: Facturación Semanal por Canal de Pago -->
+        <div class="column is-12-tablet is-8-desktop">
+          <div class="data-card">
+            <div class="data-card-header">
+              <h3>
+                <i class="fas fa-chart-column has-text-primary"></i>
+                Curva de Facturación Semanal por Canal de Pago (Lempiras)
+              </h3>
+              <div class="tags has-addons mb-0">
+                <span class="tag is-light is-small">Semana 41</span>
+                <span class="tag is-success is-light is-small">Auditoría OK</span>
+              </div>
+            </div>
+            <div class="data-card-body">
+              <div class="chart-wrapper">
+                <canvas id="chartIngresosSemanales"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Gráfico 2: Desglose de Pasajeros por Destino Operativo -->
+        <div class="column is-12-tablet is-4-desktop">
+          <div class="data-card">
+            <div class="data-card-header">
+              <h3>
+                <i class="fas fa-chart-pie has-text-primary"></i>
+                Demanda por Destino
+              </h3>
+              <span class="tag is-info is-light is-small">11 Octubre</span>
+            </div>
+            <div class="data-card-body">
+              <div class="chart-wrapper">
+                <canvas id="chartDistribucionDestinos"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ====================================================================
+           5. MONITOREO DE DESPACHOS EN VIVO Y ALERTAS DE CONTINGENCIA
+           Bulma Columns: is-7 (Flota) e is-5 (Alertas Operativas)
+           ==================================================================== -->
+      <section class="columns is-multiline mb-4" id="flota">
+
+        <!-- Estado de Unidades de Transporte y Guías Asignados -->
+        <div class="column is-12-tablet is-7-desktop">
+          <div class="data-card h-100">
+            <div class="data-card-header">
+              <h3>
+                <i class="fas fa-location-crosshairs has-text-primary"></i>
+                Despachos Activos y Capacidad en Ruta
+              </h3>
+              <span class="tag is-primary is-light is-small">4 Unidades en Operación</span>
+            </div>
+            <div class="data-card-body">
+
+              <!-- Unidad 1: Ferry Roatán -->
+              <div class="dispatch-item">
+                <div class="level is-mobile mb-1">
+                  <div class="level-left">
+                    <div>
+                      <strong>Galaxy Wave II &bull; Roatán Express</strong>
+                      <div class="is-size-7 has-text-grey">Capitán: H. Cooper | Muelle Cabotaje La Ceiba</div>
+                    </div>
+                  </div>
+                  <div class="level-right">
+                    <span class="tag is-success is-light has-text-weight-bold">En Travesía</span>
+                  </div>
+                </div>
+                <div class="level is-mobile mb-1 is-size-7">
+                  <div class="level-left"><span>138 / 150 pasajeros (92%)</span></div>
+                  <div class="level-right"><span class="has-text-grey">Arribo estimado: 19:40</span></div>
+                </div>
+                <progress class="progress is-success is-small mb-0" value="92" max="100">92%</progress>
+              </div>
+
+              <!-- Unidad 2: Autobús Copán Ruinas -->
+              <div class="dispatch-item">
+                <div class="level is-mobile mb-1">
+                  <div class="level-left">
+                    <div>
+                      <strong>Bus Ejecutivo #05 &bull; Ruta Maya Copán</strong>
+                      <div class="is-size-7 has-text-grey">Conductor: M. Pineda | Guía: Lic. D. Ramos</div>
+                    </div>
+                  </div>
+                  <div class="level-right">
+                    <span class="tag is-info is-light has-text-weight-bold">En Retorno</span>
+                  </div>
+                </div>
+                <div class="level is-mobile mb-1 is-size-7">
+                  <div class="level-left"><span>44 / 44 plazas (100% Lleno)</span></div>
+                  <div class="level-right"><span class="has-text-grey">Km 182 CA-4</span></div>
+                </div>
+                <progress class="progress is-info is-small mb-0" value="100" max="100">100%</progress>
+              </div>
+
+              <!-- Unidad 3: Sprinter La Tigra -->
+              <div class="dispatch-item">
+                <div class="level is-mobile mb-1">
+                  <div class="level-left">
+                    <div>
+                      <strong>Mercedes Sprinter #08 &bull; Sendero La Tigra</strong>
+                      <div class="is-size-7 has-text-grey">Operador: C. Mendoza | Tegucigalpa Base</div>
+                    </div>
+                  </div>
+                  <div class="level-right">
+                    <span class="tag is-primary is-light has-text-weight-bold">Completado</span>
+                  </div>
+                </div>
+                <div class="level is-mobile mb-1 is-size-7">
+                  <div class="level-left"><span>18 / 18 senderistas</span></div>
+                  <div class="level-right"><span class="has-text-grey">Check-in cerrado</span></div>
+                </div>
+                <progress class="progress is-primary is-small mb-0" value="100" max="100">100%</progress>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- Alertas de Centro de Control -->
+        <div class="column is-12-tablet is-5-desktop">
+          <div class="data-card h-100">
+            <div class="data-card-header">
+              <h3>
+                <i class="fas fa-triangle-exclamation has-text-warning"></i>
+                Centro de Contingencias &amp; Alertas
+              </h3>
+              <span class="tag is-warning is-light is-small">3 Eventos Registrados</span>
+            </div>
+            <div class="data-card-body">
+
+              <article class="message is-warning is-small mb-3">
+                <div class="message-header">
+                  <p><i class="fas fa-cloud-sun-rain mr-1"></i> Capitanía de Puerto La Ceiba</p>
+                  <span class="is-size-7">17:15</span>
+                </div>
+                <div class="message-body">
+                  Monitoreo meteorológico: viento de 12 nudos, oleaje normal en Canal de Roatán. Todas las operaciones marítimas operan con autorización de zarpe.
+                </div>
+              </article>
+
+              <article class="message is-info is-small mb-3">
+                <div class="message-header">
+                  <p><i class="fas fa-building-columns mr-1"></i> Corte ACH Banco Atlántida / BAC</p>
+                  <span class="is-size-7">18:00</span>
+                </div>
+                <div class="message-body">
+                  Lote de liquidación interbancaria programado para las 22:00. Las 14 transacciones con comprobante en revisión pasarán a conciliación automática.
+                </div>
+              </article>
+
+              <article class="message is-success is-small mb-0">
+                <div class="message-header">
+                  <p><i class="fas fa-kit-medical mr-1"></i> Póliza de Seguro Ficohsa</p>
+                  <span class="is-size-7">18:30</span>
+                </div>
+                <div class="message-body">
+                  Póliza de viaje activa y cobertura médica garantizada para los 412 pasajeros en tránsito este fin de semana.
+                </div>
+              </article>
+
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ====================================================================
+           6. TABLA TRANSACCIONAL (NÚCLEO DEL ENFOQUE EMPRESARIAL)
+           Componente Bulma: .table, .table.is-striped, .table.is-hoverable
+           ==================================================================== -->
+      <section class="data-card mb-4" id="transacciones">
+        <div class="data-card-header">
+          <h3>
+            <i class="fas fa-table-list has-text-primary"></i>
+            Bitácora Transaccional de Reservas y Pagos en Vivo
+          </h3>
+          <span class="is-size-7 has-text-grey">Base de Datos PostgreSQL &bull; Tabla <code>operaciones_reservas</code></span>
+        </div>
+
+        <!-- Filtros operativos de tabla (Bulma forms) -->
+        <div class="p-3 has-background-white-bis" style="border-bottom: 1px solid var(--brand-border);">
+          <div class="columns is-multiline is-variable is-2 is-align-items-center mb-0">
+
+            <!-- Buscador en tiempo real -->
+            <div class="column is-12-mobile is-4-tablet">
+              <div class="field mb-0">
+                <p class="control has-icons-left">
+                  <input class="input is-small" type="text" id="filtroTexto" placeholder="Filtrar por código, cliente o DNI...">
+                  <span class="icon is-small is-left"><i class="fas fa-filter"></i></span>
+                </p>
+              </div>
+            </div>
+
+            <!-- Selector de estado transaccional -->
+            <div class="column is-6-mobile is-3-tablet">
+              <div class="field mb-0">
+                <div class="control has-icons-left is-expanded">
+                  <div class="select is-small is-fullwidth">
+                    <select id="filtroEstado">
+                      <option value="todos">Todos los Estados</option>
+                      <option value="Confirmada">Confirmadas (Aprobadas)</option>
+                      <option value="Pendiente">Pendientes de Validación</option>
+                      <option value="Completada">Completadas (Tour finalizado)</option>
+                      <option value="Cancelada">Canceladas / Reembolsos</option>
+                    </select>
+                  </div>
+                  <span class="icon is-small is-left"><i class="fas fa-list-check"></i></span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Selector de destino -->
+            <div class="column is-6-mobile is-3-tablet">
+              <div class="field mb-0">
+                <div class="control has-icons-left is-expanded">
+                  <div class="select is-small is-fullwidth">
+                    <select id="filtroDestino">
+                      <option value="todos">Todos los Destinos</option>
+                      <option value="Roatán">Roatán</option>
+                      <option value="Copán">Copán Ruinas</option>
+                      <option value="La Tigra">La Tigra</option>
+                      <option value="Cayos Cochinos">Cayos Cochinos</option>
+                    </select>
+                  </div>
+                  <span class="icon is-small is-left"><i class="fas fa-map-pin"></i></span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Botón de reinicio de filtros -->
+            <div class="column is-12-mobile is-2-tablet has-text-right-tablet">
+              <button class="button is-small is-light is-fullwidth-mobile" id="btnRestablecerFiltros">
+                <span class="icon is-small"><i class="fas fa-rotate-left"></i></span>
+                <span>Restablecer</span>
+              </button>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Tabla con scroll horizontal responsivo -->
+        <div class="table-container mb-0">
+          <table class="table is-fullwidth is-hoverable is-striped transaction-table" id="tablaTransacciones">
+            <thead>
+              <tr>
+                <th>Código Transaccional</th>
+                <th>Titular de Reserva &amp; ID</th>
+                <th>Destino Operativo</th>
+                <th>Fecha Salida</th>
+                <th>Monto (HNL)</th>
+                <th>Canal / Pasarela</th>
+                <th>Estado</th>
+                <th class="has-text-centered">Acciones de Auditoría</th>
+              </tr>
+            </thead>
+            <tbody id="tbodyTransacciones">
+              <!-- Fila 1 -->
+              <tr data-estado="Confirmada" data-destino="Roatán">
+                <td><span class="code-badge">#RC-2026-9401</span></td>
+                <td>
+                  <strong>Lic. Carlos Murillo</strong>
+                  <div class="is-size-7 has-text-grey">DNI: 0801-1988-14529 &bull; 4 plazas</div>
+                </td>
+                <td><span class="tag is-light">Roatán &bull; Galaxy Wave</span></td>
+                <td><span class="is-size-7">12/10/2026 &bull; 07:00</span></td>
+                <td><span class="money-val">L. 38,400.00</span></td>
+                <td><span class="tag is-white" style="border: 1px solid #cbd5e1;"><i class="fab fa-cc-visa has-text-info mr-1"></i> BAC CyberSource</span></td>
+                <td><span class="tag is-success is-light has-text-weight-bold">Confirmada</span></td>
+                <td class="has-text-centered">
+                  <div class="buttons is-centered are-small mb-0">
+                    <button class="button is-light is-primary btn-ver-detalle" data-codigo="#RC-2026-9401" title="Ver auditoría">
+                      <span class="icon is-small"><i class="fas fa-magnifying-glass"></i></span>
+                      <span>Auditar</span>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Fila 2 -->
+              <tr data-estado="Confirmada" data-destino="Copán">
+                <td><span class="code-badge">#RC-2026-9402</span></td>
+                <td>
+                  <strong>Corporación Dinant (Giras)</strong>
+                  <div class="is-size-7 has-text-grey">RTN: 08019003214589 &bull; 24 plazas</div>
+                </td>
+                <td><span class="tag is-light">Copán Ruinas &bull; Bus #05</span></td>
+                <td><span class="is-size-7">12/10/2026 &bull; 06:00</span></td>
+                <td><span class="money-val">L. 112,800.00</span></td>
+                <td><span class="tag is-white" style="border: 1px solid #cbd5e1;"><i class="fas fa-building-columns has-text-success mr-1"></i> ACH Atlántida</span></td>
+                <td><span class="tag is-success is-light has-text-weight-bold">Confirmada</span></td>
+                <td class="has-text-centered">
+                  <div class="buttons is-centered are-small mb-0">
+                    <button class="button is-light is-primary btn-ver-detalle" data-codigo="#RC-2026-9402" title="Ver auditoría">
+                      <span class="icon is-small"><i class="fas fa-magnifying-glass"></i></span>
+                      <span>Auditar</span>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Fila 3 -->
+              <tr data-estado="Pendiente" data-destino="Cayos Cochinos">
+                <td><span class="code-badge">#RC-2026-9403</span></td>
+                <td>
+                  <strong>Dra. Elena Banegas</strong>
+                  <div class="is-size-7 has-text-grey">DNI: 0501-1992-00431 &bull; 2 plazas</div>
+                </td>
+                <td><span class="tag is-light">Cayos Cochinos &bull; Lancha Rápida</span></td>
+                <td><span class="is-size-7">13/10/2026 &bull; 08:30</span></td>
+                <td><span class="money-val">L. 16,500.00</span></td>
+                <td><span class="tag is-white" style="border: 1px solid #cbd5e1;"><i class="fas fa-mobile-screen has-text-warning mr-1"></i> Ficohsa Link</span></td>
+                <td><span class="tag is-warning is-light has-text-weight-bold">Pendiente Validación</span></td>
+                <td class="has-text-centered">
+                  <div class="buttons is-centered are-small mb-0">
+                    <button class="button is-light is-primary btn-ver-detalle" data-codigo="#RC-2026-9403" title="Ver auditoría">
+                      <span class="icon is-small"><i class="fas fa-magnifying-glass"></i></span>
+                      <span>Auditar</span>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Fila 4 -->
+              <tr data-estado="Completada" data-destino="La Tigra">
+                <td><span class="code-badge">#RC-2026-9398</span></td>
+                <td>
+                  <strong>Ing. Marco Tulio Paz</strong>
+                  <div class="is-size-7 has-text-grey">DNI: 0801-1979-05218 &bull; 6 plazas</div>
+                </td>
+                <td><span class="tag is-light">La Tigra &bull; Sprinter #08</span></td>
+                <td><span class="is-size-7">11/10/2026 &bull; 06:30</span></td>
+                <td><span class="money-val">L. 8,700.00</span></td>
+                <td><span class="tag is-white" style="border: 1px solid #cbd5e1;"><i class="fab fa-cc-mastercard has-text-danger mr-1"></i> Tarjeta Débito</span></td>
+                <td><span class="tag is-info is-light has-text-weight-bold">Completada</span></td>
+                <td class="has-text-centered">
+                  <div class="buttons is-centered are-small mb-0">
+                    <button class="button is-light is-primary btn-ver-detalle" data-codigo="#RC-2026-9398" title="Ver auditoría">
+                      <span class="icon is-small"><i class="fas fa-magnifying-glass"></i></span>
+                      <span>Auditar</span>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Fila 5 -->
+              <tr data-estado="Confirmada" data-destino="Roatán">
+                <td><span class="code-badge">#RC-2026-9404</span></td>
+                <td>
+                  <strong>Valeria Santamaría &bull; Familia</strong>
+                  <div class="is-size-7 has-text-grey">DNI: 0101-2001-09871 &bull; 5 plazas</div>
+                </td>
+                <td><span class="tag is-light">Roatán &bull; Vuelo Chárter</span></td>
+                <td><span class="is-size-7">14/10/2026 &bull; 09:15</span></td>
+                <td><span class="money-val">L. 62,500.00</span></td>
+                <td><span class="tag is-white" style="border: 1px solid #cbd5e1;"><i class="fab fa-cc-visa has-text-info mr-1"></i> BAC Credomatic</span></td>
+                <td><span class="tag is-success is-light has-text-weight-bold">Confirmada</span></td>
+                <td class="has-text-centered">
+                  <div class="buttons is-centered are-small mb-0">
+                    <button class="button is-light is-primary btn-ver-detalle" data-codigo="#RC-2026-9404" title="Ver auditoría">
+                      <span class="icon is-small"><i class="fas fa-magnifying-glass"></i></span>
+                      <span>Auditar</span>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Fila 6 -->
+              <tr data-estado="Cancelada" data-destino="Copán">
+                <td><span class="code-badge">#RC-2026-9385</span></td>
+                <td>
+                  <strong>Lic. Roberto Suazo</strong>
+                  <div class="is-size-7 has-text-grey">DNI: 0401-1985-02114 &bull; 2 plazas</div>
+                </td>
+                <td><span class="tag is-light">Copán Ruinas &bull; Bus #05</span></td>
+                <td><span class="is-size-7">11/10/2026 &bull; 06:00</span></td>
+                <td><span class="money-val">L. 9,400.00</span></td>
+                <td><span class="tag is-white" style="border: 1px solid #cbd5e1;"><i class="fas fa-hand-holding-dollar has-text-grey mr-1"></i> Reembolsado SAR</span></td>
+                <td><span class="tag is-danger is-light has-text-weight-bold">Cancelada / Nota Crédito</span></td>
+                <td class="has-text-centered">
+                  <div class="buttons is-centered are-small mb-0">
+                    <button class="button is-light is-primary btn-ver-detalle" data-codigo="#RC-2026-9385" title="Ver auditoría">
+                      <span class="icon is-small"><i class="fas fa-magnifying-glass"></i></span>
+                      <span>Auditar</span>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Paginación de Bulma: .pagination -->
+        <div class="p-3">
+          <nav class="pagination is-centered is-small" role="navigation" aria-label="pagination">
+            <a class="pagination-previous" disabled>Anterior</a>
+            <a class="pagination-next">Siguiente</a>
+            <ul class="pagination-list">
+              <li><a class="pagination-link is-current" aria-label="Page 1" aria-current="page">1</a></li>
+              <li><a class="pagination-link" aria-label="Goto page 2">2</a></li>
+              <li><a class="pagination-link" aria-label="Goto page 3">3</a></li>
+              <li><span class="pagination-ellipsis">&hellip;</span></li>
+              <li><a class="pagination-link" aria-label="Goto page 15">15</a></li>
+            </ul>
+          </nav>
+        </div>
+      </section>
+
+    </main>
+  </div>
+  <!-- ====================================================================
+       7. MODALES OPERATIVOS (COMPONENTES BULMA: .modal, .modal-card)
+       ==================================================================== -->
+
+  <!-- MODAL 1: COMPARATIVA TEÓRICA CONCEPTUAL (SITIO COMERCIAL VS EMPRESARIAL)
+       Atiende explícitamente el requisito 3 de la rúbrica docente -->
+  <div class="modal" id="modalComparativa">
+    <div class="modal-background js-modal-close"></div>
+    <div class="modal-card" style="width: 90%; max-width: 860px;">
+      <header class="modal-card-head has-background-white">
+        <p class="modal-card-title is-size-5 has-text-weight-bold">
+          <i class="fas fa-scale-balanced has-text-warning mr-2"></i>Diferenciación Conceptual: Sitio Comercial vs. Sitio Empresarial
+        </p>
+        <button class="delete js-modal-close" aria-label="close"></button>
+      </header>
+      <section class="modal-card-body">
+        <div class="notification is-light is-primary is-size-7 mb-4">
+          <strong>Fundamento de Portales Web II:</strong> Los sistemas web se diseñan según el propósito del usuario final. En este ecosistema de <strong>Rumbo Catracho</strong>, contrastamos el sitio comercial público previo con este nuevo panel administrativo de monitoreo interno.
+        </div>
+
+        <table class="table is-bordered is-striped is-fullwidth comparison-table">
+          <thead>
+            <tr>
+              <th style="width: 20%;">Criterio</th>
+              <th style="width: 40%;" class="has-background-success-light">Sitio Comercial (Público / Ventas)<br><small>Ej. rumbo-catracho-bootstrap</small></th>
+              <th style="width: 40%;" class="has-background-info-light">Sitio Empresarial (Interno / Monitoreo)<br><small>Ej. rumbo-catracho-dashboard (Bulma)</small></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>1. Enfoque</strong></td>
+              <td>Atracción visual, conversión y ventas. Persuade al turista a comprar paquetes vacacionales.</td>
+              <td>Monitoreo de operaciones, telemetría, auditoría transaccional y logística interna en tiempo real.</td>
+            </tr>
+            <tr>
+              <td><strong>2. Audiencia (Usuario)</strong></td>
+              <td>Cliente externo / Turista público. Busca inspiración, fotografías atractivas, precios y contacto fácil.</td>
+              <td>Personal interno: supervisores de operaciones, cajeros, coordinadores de guías y auditores fiscales.</td>
+            </tr>
+            <tr>
+              <td><strong>3. Contenido</strong></td>
+              <td>Fotografías de alta resolución (Hero), historias de marca, tarjetas de destinos turísticos y testimonios.</td>
+              <td>Tablas densas de datos con códigos transaccionales (#RC-...), gráficos analíticos, métricas de ocupación (KPIs) y alertas.</td>
+            </tr>
+            <tr>
+              <td><strong>4. Estética y Diseño</strong></td>
+              <td>Emocional, espaciosa, decorativa, con jerarquía orientada a la llamada a la acción (CTA: "Quiero explorar").</td>
+              <td>Funcional, compacta, jerarquía visual basada en estados (tags de color para alertas, aprobaciones o errores).</td>
+            </tr>
+            <tr>
+              <td><strong>5. Métricas de Éxito</strong></td>
+              <td>Tasa de conversión de ventas, tiempo en página, clics en paquetes y registros de clientes potenciales.</td>
+              <td>Velocidad de procesamiento de transacciones, índice de ocupación de buses/ferrys (89.4%) y cero incidencias operativas.</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+      <footer class="modal-card-foot is-justify-content-flex-end has-background-white">
+        <button class="button is-primary js-modal-close">Entendido y Cerrar</button>
+      </footer>
+    </div>
+  </div>
+
+  <!-- MODAL 2: AUDITORÍA Y DETALLE TRANSACCIONAL -->
+  <div class="modal" id="modalDetalleTransaccion">
+    <div class="modal-background js-modal-close"></div>
+    <div class="modal-card" style="width: 90%; max-width: 650px;">
+      <header class="modal-card-head has-background-white">
+        <p class="modal-card-title is-size-5 has-text-weight-bold">
+          <i class="fas fa-file-invoice has-text-primary mr-2"></i>Ficha de Auditoría Transaccional
+        </p>
+        <button class="delete js-modal-close" aria-label="close"></button>
+      </header>
+      <section class="modal-card-body">
+        <div class="box has-background-white-ter is-shadowless p-3 mb-3">
+          <div class="level is-mobile mb-0">
+            <div class="level-left">
+              <div>
+                <span class="is-size-7 has-text-grey">Código de Transacción Fiscal:</span>
+                <div class="is-size-5 has-text-weight-bold" id="modalCodigoTx">#RC-2026-9401</div>
+              </div>
+            </div>
+            <div class="level-right">
+              <span class="tag is-success is-medium" id="modalEstadoTx">Confirmada</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="columns is-multiline is-size-7">
+          <div class="column is-6">
+            <p><strong>Pasajero Titular:</strong> Lic. Carlos Murillo</p>
+            <p><strong>DNI / RTN:</strong> 0801-1988-14529</p>
+            <p><strong>Teléfono Verificado:</strong> +504 9988-1122</p>
+          </div>
+          <div class="column is-6">
+            <p><strong>Destino y Servicio:</strong> Roatán &bull; Galaxy Wave</p>
+            <p><strong>Plazas Asignadas:</strong> 4 Asientos (A-12, A-13, A-14, A-15)</p>
+            <p><strong>Guía Operativo:</strong> Asignado por Base La Ceiba</p>
+          </div>
+        </div>
+
+        <hr class="my-2">
+
+        <h4 class="title is-6 mb-2">Desglose Fiscal (Régimen de Facturación SAR):</h4>
+        <div class="table-container mb-2">
+          <table class="table is-narrow is-fullwidth is-size-7">
+            <tr>
+              <td>Subtotal Servicios Turísticos:</td>
+              <td class="has-text-right">L. 32,542.37</td>
+            </tr>
+            <tr>
+              <td>Impuesto Sobre Ventas (ISV 15%):</td>
+              <td class="has-text-right">L. 4,881.36</td>
+            </tr>
+            <tr>
+              <td>Tasa de Fomento Turístico Municipal (4%):</td>
+              <td class="has-text-right">L. 976.27</td>
+            </tr>
+            <tr class="has-text-weight-bold has-background-light">
+              <td>Total Cobrado en Pasarela:</td>
+              <td class="has-text-right has-text-primary">L. 38,400.00</td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="is-size-7 has-text-grey">
+          <p><i class="fas fa-lock mr-1"></i> Autorización Pasarela: <strong>AUTH-BAC-849201-OK</strong> &bull; IP: 190.92.41.11</p>
+          <p><i class="fas fa-user-check mr-1"></i> Auditoría realizada por: <strong>Jonathan Ávila (Supervisor)</strong></p>
+        </div>
+      </section>
+      <footer class="modal-card-foot is-justify-content-flex-end has-background-white">
+        <button class="button is-light js-modal-close">Cerrar</button>
+        <button class="button is-primary" id="btnImprimirFiscal">
+          <span class="icon is-small"><i class="fas fa-print"></i></span>
+          <span>Imprimir Comprobante Fiscal</span>
+        </button>
+      </footer>
+    </div>
+  </div>
+
+  <!-- MODAL 3: NUEVA RESERVA MANUAL (FORMULARIO EMPRESARIAL INTERNO) -->
+  <div class="modal" id="modalNuevaReserva">
+    <div class="modal-background js-modal-close"></div>
+    <div class="modal-card" style="width: 90%; max-width: 600px;">
+      <header class="modal-card-head has-background-white">
+        <p class="modal-card-title is-size-5 has-text-weight-bold">
+          <i class="fas fa-headset has-text-primary mr-2"></i>Ingreso Manual de Reserva (Call Center)
+        </p>
+        <button class="delete js-modal-close" aria-label="close"></button>
+      </header>
+      <section class="modal-card-body">
+        <form id="formNuevaReserva">
+          <div class="columns is-multiline">
+            <div class="column is-6">
+              <div class="field">
+                <label class="label is-small">Nombre Completo del Pasajero</label>
+                <div class="control has-icons-left">
+                  <input class="input is-small" type="text" id="nuevoNombre" placeholder="Ej. Ana Lucía Mejía" required>
+                  <span class="icon is-small is-left"><i class="fas fa-user"></i></span>
+                </div>
+              </div>
+            </div>
+
+            <div class="column is-6">
+              <div class="field">
+                <label class="label is-small">DNI / Pasaporte</label>
+                <div class="control has-icons-left">
+                  <input class="input is-small" type="text" id="nuevoDni" placeholder="Ej. 0801-1995-12345" required>
+                  <span class="icon is-small is-left"><i class="fas fa-id-card"></i></span>
+                </div>
+              </div>
+            </div>
+
+            <div class="column is-6">
+              <div class="field">
+                <label class="label is-small">Destino Operativo</label>
+                <div class="control has-icons-left">
+                  <div class="select is-small is-fullwidth">
+                    <select id="nuevoDestino" required>
+                      <option value="Roatán">Roatán &bull; Galaxy Wave</option>
+                      <option value="Copán">Copán Ruinas &bull; Ruta Maya</option>
+                      <option value="La Tigra">La Tigra &bull; Senderismo</option>
+                      <option value="Cayos Cochinos">Cayos Cochinos &bull; Lancha Rápida</option>
+                    </select>
+                  </div>
+                  <span class="icon is-small is-left"><i class="fas fa-map-location-dot"></i></span>
+                </div>
+              </div>
+            </div>
+
+            <div class="column is-6">
+              <div class="field">
+                <label class="label is-small">Número de Plazas</label>
+                <div class="control has-icons-left">
+                  <input class="input is-small" type="number" id="nuevasPlazas" min="1" max="10" value="2" required>
+                  <span class="icon is-small is-left"><i class="fas fa-users"></i></span>
+                </div>
+              </div>
+            </div>
+
+            <div class="column is-6">
+              <div class="field">
+                <label class="label is-small">Monto a Cobrar (Lempiras)</label>
+                <div class="control has-icons-left">
+                  <input class="input is-small" type="number" id="nuevoMonto" step="100" placeholder="Ej. 18500" required>
+                  <span class="icon is-small is-left"><i class="fas fa-money-bill"></i></span>
+                </div>
+              </div>
+            </div>
+
+            <div class="column is-6">
+              <div class="field">
+                <label class="label is-small">Método de Cobro Interno</label>
+                <div class="control has-icons-left">
+                  <div class="select is-small is-fullwidth">
+                    <select id="nuevoMetodo" required>
+                      <option value="ACH">Transferencia ACH Bancaria</option>
+                      <option value="Tarjeta">Tarjeta de Crédito / Débito (POS)</option>
+                      <option value="Efectivo">Efectivo en Caja de Terminal</option>
+                    </select>
+                  </div>
+                  <span class="icon is-small is-left"><i class="fas fa-credit-card"></i></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </section>
+      <footer class="modal-card-foot is-justify-content-flex-end has-background-white">
+        <button class="button is-light js-modal-close">Cancelar</button>
+        <button class="button is-primary" id="btnGuardarReserva">
+          <span class="icon is-small"><i class="fas fa-check"></i></span>
+          <span>Procesar y Emitir Voucher</span>
+        </button>
+      </footer>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       8. FOOTER OPERATIVO
+       Componente Bulma: .footer con estilo limpio institucional
+       ==================================================================== -->
+  <footer class="dashboard-footer">
+    <div class="level is-mobile">
+      <div class="level-left">
+        <span>
+          <strong>Rumbo Catracho</strong> &bull; Sistema ERP &amp; Monitoreo Logístico v2.4 |
+          Desarrollado para la clase de <strong>Portales Web II</strong> (UNICAH III Tri 2026).
+        </span>
+      </div>
+      <div class="level-right">
+        <span>
+          Estudiante: <strong>Jonathan Ávila</strong> &bull;
+          Framework: <strong>Bulma CSS 1.0.4</strong> &bull;
+          <a href="https://github.com/JonaJSA" target="_blank" class="has-text-primary has-text-weight-bold">
+            <i class="fab fa-github mr-1"></i>JonaJSA
+          </a>
+        </span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts del Dashboard (Interacciones, Gráficos y Modales) -->
+  <script src="script.js"></script>
+
+</body>
+
+</html>

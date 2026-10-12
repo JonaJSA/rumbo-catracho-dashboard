@@ -1,0 +1,322 @@
+﻿/* ==========================================================================
+   RUMBO CATRACHO - PANEL ADMINISTRATIVO & BACKOFFICE OPERATIVO
+   Framework: Bulma CSS 1.0.4 (Personalizado con variables CSS nativas)
+   Estilo: Empresarial / Monitoreo Transaccional Interno
+   Desarrollado por: Jonathan Ávila
+   ========================================================================== */
+
+:root {
+  /* Paleta institucional adaptada a Bulma 1.0.4 */
+  --custom-h: 165deg;
+  --custom-s: 46%;
+  --custom-l: 22%;
+
+  --bulma-primary-h: var(--custom-h);
+  --bulma-primary-s: var(--custom-s);
+  --bulma-primary-l: var(--custom-l);
+
+  /* Acentos de estado empresarial */
+  --brand-navy: #0f172a;
+  --brand-dark-surface: #1e293b;
+  --brand-light-bg: #f8fafc;
+  --brand-border: #e2e8f0;
+  --brand-amber: #d97706;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+/* Base del Dashboard */
+body {
+  background-color: var(--brand-light-bg);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+}
+
+/* Top Navbar Operativa */
+.dashboard-navbar {
+  background-color: #ffffff;
+  border-bottom: 1px solid var(--brand-border);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+  position: sticky;
+  top: 0;
+  z-index: 30;
+}
+
+.brand-badge {
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+  text-transform: uppercase;
+  background-color: rgba(23, 62, 50, 0.1);
+  color: #173e32;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+}
+
+.system-status-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  color: #059669;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  padding: 0.25rem 0.65rem;
+  border-radius: 9999px;
+  font-weight: 500;
+}
+
+.pulse-dot {
+  width: 8px;
+  height: 8px;
+  background-color: #10b981;
+  border-radius: 50%;
+  box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+  animation: pulse-ring 2s infinite cubic-bezier(0.66, 0, 0, 1);
+}
+
+@keyframes pulse-ring {
+  to {
+    box-shadow: 0 0 0 8px rgba(16, 185, 129, 0);
+  }
+}
+
+/* Sidebar de Navegación Empresarial */
+.dashboard-sidebar {
+  background-color: #ffffff;
+  border-right: 1px solid var(--brand-border);
+  min-height: calc(100vh - 65px);
+  padding: 1.5rem 1rem;
+}
+
+@media screen and (min-width: 1024px) {
+  .dashboard-sidebar {
+    position: sticky;
+    top: 65px;
+    height: calc(100vh - 65px);
+    overflow-y: auto;
+  }
+}
+
+.menu-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #64748b;
+  margin-top: 1.25rem;
+}
+
+.menu-list a {
+  border-radius: 6px;
+  padding: 0.55rem 0.85rem;
+  font-size: 0.875rem;
+  color: #334155;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: all 0.15s ease-in-out;
+}
+
+.menu-list a:hover {
+  background-color: #f1f5f9;
+  color: #0f172a;
+}
+
+.menu-list a.is-active {
+  background-color: #173e32;
+  color: #ffffff !important;
+  font-weight: 600;
+}
+
+.menu-list a .icon {
+  margin-right: 0.6rem;
+}
+
+/* Contenedor Principal */
+.dashboard-main {
+  padding: 1.5rem;
+  flex: 1;
+}
+
+/* Tarjetas de Métricas (KPIs) */
+.kpi-card {
+  background: #ffffff;
+  border: 1px solid var(--brand-border);
+  border-radius: 8px;
+  padding: 1.25rem;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  height: 100%;
+}
+
+.kpi-card:hover {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
+}
+
+.kpi-icon-wrapper {
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+}
+
+.kpi-icon-success {
+  background-color: #ecfdf5;
+  color: #059669;
+}
+
+.kpi-icon-primary {
+  background-color: #eff6ff;
+  color: #2563eb;
+}
+
+.kpi-icon-warning {
+  background-color: #fffbeb;
+  color: #d97706;
+}
+
+.kpi-icon-info {
+  background-color: #f0fdf4;
+  color: #16a34a;
+}
+
+.kpi-value {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.kpi-label {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.kpi-trend {
+  font-size: 0.775rem;
+  font-weight: 600;
+}
+
+/* Paneles y Contenedores de Datos */
+.data-card {
+  background: #ffffff;
+  border: 1px solid var(--brand-border);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+}
+
+.data-card-header {
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--brand-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #ffffff;
+}
+
+.data-card-header h3 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.data-card-body {
+  padding: 1.25rem;
+}
+
+/* Gráficos */
+.chart-wrapper {
+  position: relative;
+  width: 100%;
+  height: 280px;
+}
+
+/* Tabla Transaccional */
+.transaction-table {
+  margin-bottom: 0 !important;
+}
+
+.transaction-table th {
+  background-color: #f8fafc;
+  color: #475569 !important;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 700;
+  padding: 0.75rem 1rem;
+  border-bottom: 2px solid var(--brand-border) !important;
+  white-space: nowrap;
+}
+
+.transaction-table td {
+  padding: 0.85rem 1rem;
+  vertical-align: middle;
+  font-size: 0.85rem;
+  color: #1e293b;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.code-badge {
+  font-family: var(--font-mono);
+  font-size: 0.775rem;
+  font-weight: 600;
+  background-color: #f1f5f9;
+  color: #0f172a;
+  padding: 0.2rem 0.45rem;
+  border-radius: 4px;
+  border: 1px solid #e2e8f0;
+}
+
+.money-val {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: #0f172a;
+}
+
+/* Unidades y Despachos en Tiempo Real */
+.dispatch-item {
+  border: 1px solid var(--brand-border);
+  border-radius: 6px;
+  padding: 0.85rem;
+  background: #ffffff;
+  margin-bottom: 0.75rem;
+  transition: all 0.15s ease;
+}
+
+.dispatch-item:hover {
+  border-color: #cbd5e1;
+  background: #fafafa;
+}
+
+/* Modal de Comparativa Comercial vs. Empresarial */
+.comparison-table th {
+  background: #f1f5f9;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.comparison-table td {
+  font-size: 0.85rem;
+  line-height: 1.45;
+}
+
+/* Footer Operativo */
+.dashboard-footer {
+  background-color: #ffffff;
+  border-top: 1px solid var(--brand-border);
+  padding: 1rem 1.5rem;
+  font-size: 0.8rem;
+  color: #64748b;
+}
